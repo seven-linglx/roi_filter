@@ -7,19 +7,13 @@
 
 #include <iostream>
 #include <pcl/io/pcd_io.h>
-#include <pcl/common/transforms.h>  //allows us to use pcl::transformPointCloud function
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/project_inliers.h>
 #include <pcl/filters/extract_indices.h>
+#include <pcl/filters/random_sample.h>
 #include <pcl/sample_consensus/method_types.h>  //随机样本一致性算法 方法类型
 #include <pcl/segmentation/sac_segmentation.h>  //随机样本一致性算法 分割方法
-#include <pcl/filters/radius_outlier_removal.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/features/normal_3d.h>
-#include <pcl/segmentation/extract_clusters.h>
-#include <pcl/filters/statistical_outlier_removal.h>
-#include <gflags/gflags.h>
-#include <glog/logging.h>
+#include <pcl/console/time.h>
 
 namespace robosense
 {
@@ -51,6 +45,7 @@ private:
       row_cell = 4;
       column_cell = 4;
       scale_of_filter = 0.1;
+      threshold_of_plane_seg = 0.3;
     }
     float left_bound;
     float right_bound;
@@ -61,6 +56,7 @@ private:
     int row_cell;
     int column_cell;
     float scale_of_filter;
+    float threshold_of_plane_seg;
   };
 
 public:
@@ -75,15 +71,16 @@ private:
   float* column_seg_points_;
   void initCells(vector<PointCloudTypePtr>& cells);
   void initBound();
-  void pointCloudToGridCells(PointCloudTypeConstPtr point_cloud, vector<PointCloudTypePtr>& cells);
-  int whichCellOfPoint(float x, float y);
+  unsigned int pointCloudToGridCells(PointCloudTypeConstPtr point_cloud, vector<PointCloudTypePtr>& cells);
+  int whichCellOfPoint(float x, float y, float z);
   int bs(float a[], int len, float item); // binary search
-  void filter(PointCloudTypePtr point_cloud);
-  void segment(PointCloudTypePtr point_cloud);
-  void showPointCloud(vector<PointCloudTypePtr> &plane_ptr_list);
+  void filterCells(vector<PointCloudTypePtr> &cells, PointCloudTypePtr point_cloud);
+  void segment(PointCloudTypePtr in);
+  void ransomFilter(PointCloudTypePtr in, PointCloudTypePtr out, float scale);
+  void showPointCloud(vector<PointCloudTypePtr> &cells);
 };
 
-}  // namespace filter
-}  // namespace localization
-}  // namespace robosense
+}// namespace filter
+}// namespace localization
+}// namespace robosense
 #endif  // PROJECTS_ROI_FILTER_H

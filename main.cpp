@@ -4,17 +4,7 @@
 
 #include <iostream>
 #include <pcl/io/pcd_io.h>
-#include <pcl/common/transforms.h> //allows us to use pcl::transformPointCloud function
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/filters/project_inliers.h>
-#include <pcl/filters/extract_indices.h>
-#include <pcl/sample_consensus/method_types.h> //随机样本一致性算法 方法类型
-#include <pcl/segmentation/sac_segmentation.h> //随机样本一致性算法 分割方法
-#include <pcl/filters/radius_outlier_removal.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/features/normal_3d.h>
-#include <pcl/segmentation/extract_clusters.h>
-#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/console/time.h>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -36,10 +26,7 @@ int main(int argc, char *argv[])
 
   using namespace robosense::localization::filter;
   ROIFilter roi_filter;
-  pcl::console::TicToc t;
-  t.tic();
-  roi_filter.setBound(-20, 20, -40, 40, -5, 15);
+  roi_filter.setBound(-40, 40, -15, 15, -5, 15);
   roi_filter.filter(input_cloud, input_cloud, 2000);
-  t.toc_print();
 }
 
