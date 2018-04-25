@@ -178,12 +178,13 @@ void ROIFilter::ransomFilter(PointCloudTypePtr in, PointCloudTypePtr out, float 
 {
   unsigned int sample = static_cast<unsigned int>(scale * in->size());
   unsigned long max_index = in->size();
+  out->resize(sample);
   unsigned long choose_index = 0;
   srand((unsigned)time(NULL));
   for (int i = 0; i < sample; ++i)
   {
     choose_index = rand() % max_index;
-    out->push_back(in->at(choose_index));
+    (*out)[i] = in->at(choose_index);//todo modify
   }
 }
 
